@@ -1,20 +1,68 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useCallback, useEffect, useState } from "react";
+import SafeContainer from "./components/SafeContainer";
+import { QuicksandFonts } from "./design/fonts";
+import { useFonts } from "@expo-google-fonts/quicksand";
+import { $flex } from "./design/styling";
+import * as SplashScreen from "expo-splash-screen";
+import { firebaseAuth } from "./utils/firebase";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Home from "./screens/Home";
+import Auth from "./screens/Auth";
+import { colors } from "./design/colors";
+import { StyleSheet, View } from "react-native";
 
-export default function App() {
+SplashScreen.preventAutoHideAsync();
+
+const Stack = createNativeStackNavigator();
+
+const App = () => {
+  // #region loading fonts + showing splash screen
+  const [fontsLoaded] = useFonts({ ...QuicksandFonts });
+
+  const [appIsReady, setAppIsReady] = useState(false);
+
+  useEffect(() => {
+    async function prepare() {
+      try {
+        // making all the API calls here
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setAppIsReady(true);
+      }
+    }
+
+    prepare();
+  }, []);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (appIsReady) {
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsReady]);
+
+  if (!appIsReady || !fontsLoaded) {
+    return null;
+  }
+  // #endregion loading fonts + showing splash screen
+
+  const isAuthorized = false;
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <View style={$flex} onLayout={onLayoutRootView}>
+        <Stack.Navigator
+          initialRouteName={isAuthorized ? "Home" : "Auth"}
+          screenOptions={{ headerShown: false }}
+        >
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="Auth" component={Auth} />
+        </Stack.Navigator>
+      </View>
+    </NavigationContainer>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
