@@ -1,16 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
-import SafeContainer from "./components/SafeContainer";
 import { QuicksandFonts } from "./design/fonts";
 import { useFonts } from "@expo-google-fonts/quicksand";
 import { $flex } from "./design/styling";
 import * as SplashScreen from "expo-splash-screen";
-import { firebaseAuth } from "./utils/firebase";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "./screens/Home";
-import Auth from "./screens/Auth";
-import { colors } from "./design/colors";
-import { StyleSheet, View } from "react-native";
+import Auth from "./screens/auth";
+import { View } from "react-native";
 
 SplashScreen.preventAutoHideAsync();
 

@@ -1,24 +1,23 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React from "react";
 import { StyleSheet, Text } from "react-native";
 import { colors } from "../design/colors";
 import SafeContainer from "../components/SafeContainer";
-import {
-  Fonts,
-  FontSizes,
-  getFontStyle,
-  QuicksandFonts,
-} from "../design/fonts";
-import { useFonts } from "@expo-google-fonts/quicksand";
+import { Fonts, FontSizes, getFontStyle } from "../design/fonts";
 import { spacing } from "../design/spacing";
 import { $flex } from "../design/styling";
-import * as SplashScreen from "expo-splash-screen";
 import { firebaseAuth } from "../utils/firebase";
-import { useNavigation } from "@react-navigation/native";
-
-SplashScreen.preventAutoHideAsync();
+import { StackActions, useNavigation } from "@react-navigation/native";
+import { ATouchableOpacity } from "../components/Animated";
+import { signOut } from "firebase/auth";
 
 const Home = () => {
-  const { navigate } = useNavigation();
+  const navigation = useNavigation();
+
+  const handleSignOut = () => {
+    signOut(firebaseAuth)
+      .then(() => navigation.dispatch(StackActions.replace("Auth")))
+      .catch((e) => console.error(e.message));
+  };
 
   return (
     <SafeContainer
@@ -29,9 +28,30 @@ const Home = () => {
         style={{
           ...getFontStyle(Fonts.Quicksand_Bold, FontSizes.title, colors.text),
         }}
-        onPress={() => navigate("Auth")}
         children="My habits"
       />
+      <Text
+        style={{
+          marginTop: spacing.large,
+          ...getFontStyle(Fonts.Quicksand_Bold, FontSizes.text, colors.text),
+        }}
+      >
+        Hello, {firebaseAuth.currentUser?.email}
+      </Text>
+      <ATouchableOpacity onPress={handleSignOut}>
+        <Text
+          style={{
+            marginTop: spacing.large,
+            ...getFontStyle(
+              Fonts.Quicksand_Bold,
+              FontSizes.title,
+              colors.text_secondary
+            ),
+          }}
+        >
+          Sign out
+        </Text>
+      </ATouchableOpacity>
     </SafeContainer>
   );
 };
