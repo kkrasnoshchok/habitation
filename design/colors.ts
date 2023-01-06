@@ -3,5 +3,6 @@ export enum colors {
   bg = "#E8EAED",
   text_secondary = "#7d8696",
   placeholder = "#b1b7bd",
+  error = "#c0392b",
   //   #efefec
 }
