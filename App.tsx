@@ -45,13 +45,11 @@ const App = () => {
   }
   // #endregion loading fonts + showing splash screen
 
-  const isAuthorized = false;
-
   return (
     <NavigationContainer>
       <View style={$flex} onLayout={onLayoutRootView}>
         <Stack.Navigator
-          initialRouteName={isAuthorized ? "Home" : "Auth"}
+          initialRouteName={"Auth"}
           screenOptions={{ headerShown: false }}
         >
           <Stack.Screen name="Home" component={Home} />

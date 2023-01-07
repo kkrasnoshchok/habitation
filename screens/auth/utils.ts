@@ -6,8 +6,9 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import * as yup from "yup";
-import { firebaseAuth } from "../../utils/firebase";
+import { firebaseAuth, firebaseDB } from "../../utils/firebase";
 import { AuthFormikInitValues } from "./types";
 
 export const initialValues: AuthFormikInitValues = {
@@ -38,12 +39,25 @@ export const signIn: AuthFunctions = async (values) => {
 };
 
 export const signUp: AuthFunctions = async (values) => {
-  const result = await createUserWithEmailAndPassword(
+  const {
+    user: { email, uid },
+  } = await createUserWithEmailAndPassword(
     firebaseAuth,
     values.email,
     values.password
   );
-  console.log("Signed up with: ", result.user.email);
+  const userRef = doc(firebaseDB, "users", uid);
+  const userData = {
+    email,
+    greetingName: null,
+    birthday: null,
+    weight: null,
+    height: null,
+    habits: null,
+    habitsStreak: 0,
+    sawOnBoarding: false,
+  };
+  await setDoc(userRef, userData);
 };
 
 export const onSubmit: AuthFunctions = async (values) => {
@@ -62,4 +76,3 @@ export const onSubmit: AuthFunctions = async (values) => {
     }
   }
 };
-

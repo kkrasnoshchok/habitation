@@ -35,6 +35,13 @@ const Auth: FC = () => {
     onSubmit,
   });
 
+  const shouldButtonBeDisabled =
+    !!(touched.password && errors.password) ||
+    !!(touched.email && errors.email) ||
+    isSubmitting ||
+    !values.email ||
+    !values.password;
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(firebaseAuth, (user) => {
       if (user) {
@@ -87,9 +94,7 @@ const Auth: FC = () => {
         />
         <Button
           disabled={
-            !!(touched.password && errors.password) ||
-            !!(touched.email && errors.email) ||
-            isSubmitting
+            shouldButtonBeDisabled
           }
           onPress={() => handleSubmit()}
         />
